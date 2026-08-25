@@ -147,12 +147,12 @@ class TestAccountService(TestCase):
         self.assertEqual(data["email"], account.email)
         self.assertEqual(data["address"], account.address)
         self.assertEqual(data["phone_number"], account.phone_number)
-    
+
     def test_account_not_found(self):
         """It should not Read an Account that is not found"""
         response = self.client.get(BASE_URL + "/0")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-      
+
     def test_update_an_account(self):
         """It should Update an existing Account"""
         account = AccountFactory()
@@ -182,7 +182,7 @@ class TestAccountService(TestCase):
         data = response.get_json()
         self.assertEqual(data["name"], "Updated Name")
         self.assertEqual(data["address"], "123 Updated Street")
-   
+
     def test_update_account_not_found(self):
         """It should not Update an Account that is not found"""
         account = AccountFactory()
