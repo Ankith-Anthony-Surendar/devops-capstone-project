@@ -91,11 +91,17 @@ spec:
       params:
         - name: SCRIPT
           value: |
-            echo "Updating manifest..."
-            sed -i "s|IMAGE_NAME_HERE|$(params.build-image)|g" deploy/deployment.yaml
-            cat deploy/deployment.yaml
+            echo "Preparing deployment manifests..."
+            rm -rf /tmp/accounts-deploy
+            mkdir -p /tmp/accounts-deploy
+            cp deploy/deployment.yaml /tmp/accounts-deploy/deployment.yaml
+            cp deploy/service.yaml /tmp/accounts-deploy/service.yaml
+            sed "s|IMAGE_NAME_HERE|$(params.build-image)|g" /tmp/accounts-deploy/deployment.yaml > /tmp/accounts-deploy/deployment.tmp
+            mv /tmp/accounts-deploy/deployment.tmp /tmp/accounts-deploy/deployment.yaml
+            echo "Updated image:"
+            grep -n "image:" /tmp/accounts-deploy/deployment.yaml
             echo "Deploying to OpenShift..."
-            oc apply -f deploy/
+            oc apply -f /tmp/accounts-deploy/
             oc get pods -l app=accounts
       runAfter:
         - build
