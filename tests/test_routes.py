@@ -221,3 +221,27 @@ class TestAccountService(TestCase):
         """It should Delete an Account that is not found"""
         response = self.client.delete(BASE_URL + "/0")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_get_account_list(self):
+        """It should Get a list of Accounts"""
+        account1 = AccountFactory()
+        account2 = AccountFactory()
+
+        response = self.client.post(
+            BASE_URL,
+            json=account1.serialize()
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.post(
+            BASE_URL,
+            json=account2.serialize()
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.get(BASE_URL)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        data = response.get_json()
+        self.assertEqual(len(data), 2)
